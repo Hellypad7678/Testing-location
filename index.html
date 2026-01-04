@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Location</title>
+</head>
+<body style="text-align:center;font-family:Arial;padding-top:50px">
+
+<h2>Share Your Location</h2>
+<button onclick="getLocation()" style="padding:15px;font-size:18px">
+Click to Allow Location
+</button>
+
+<p id="out"></p>
+
+<script>
+function getLocation() {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      let lat = pos.coords.latitude;
+      let lon = pos.coords.longitude;
+      document.getElementById("out").innerHTML =
+        `Lat: ${lat}<br>Lon: ${lon}<br>
+        <a href="https://maps.google.com/?q=${lat},${lon}" target="_blank">
+        Open in Maps</a>`;
+    },
+    err => {
+      document.getElementById("out").innerHTML = "Permission denied or error";
+    }
+  );
+}
+</script>
+
+</body>
+</html>
