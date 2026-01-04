@@ -1,31 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Get Location</title>
+<title>Share Location</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding-top: 50px;
+}
+button {
+  padding: 15px 25px;
+  font-size: 18px;
+  cursor: pointer;
+}
+#out {
+  margin-top: 20px;
+  font-size: 16px;
+}
+</style>
 </head>
-<body style="text-align:center;font-family:Arial;padding-top:50px">
+
+<body>
 
 <h2>Share Your Location</h2>
-<button onclick="getLocation()" style="padding:15px;font-size:18px">
-Click to Allow Location
-</button>
+<p>By clicking the button, you consent to share your location.</p>
+
+<button onclick="getLocation()">Click to Allow Location</button>
 
 <p id="out"></p>
 
 <script>
 function getLocation() {
+
+  if (!navigator.geolocation) {
+    document.getElementById("out").innerHTML =
+      "Geolocation not supported on this device.";
+    return;
+  }
+
+  document.getElementById("out").innerHTML =
+    "Requesting location...";
+
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      let lat = pos.coords.latitude;
-      let lon = pos.coords.longitude;
+    function (position) {
+
+      var lat = position.coords.latitude;
+      var lon = position.coords.longitude;
+      var time = new Date().toLocaleString();
+
       document.getElementById("out").innerHTML =
-        `Lat: ${lat}<br>Lon: ${lon}<br>
-        <a href="https://maps.google.com/?q=${lat},${lon}" target="_blank">
-        Open in Maps</a>`;
+        "Location captured ✔️<br>Saving to database...";
+
+      fetch(
+        "https://docs.google.com/forms/d/e/1FAIpQLSenIN4iNoUo7sPHfVd_EiIUQC1BO1nItPyERuAk0J7i97sTkQ/formResponse",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body:
+            "entry.1111111111=" + lat +
+            "&entry.2222222222=" + lon +
+            "&entry.3333333333=" + encodeURIComponent(time)
+        }
+      );
+
+      document.getElementById("out").innerHTML =
+        "✅ Location saved successfully";
+
     },
-    err => {
-      document.getElementById("out").innerHTML = "Permission denied or error";
+    function () {
+      document.getElementById("out").innerHTML =
+        "❌ Permission denied or error occurred";
     }
   );
 }
